@@ -13,8 +13,7 @@ class MainApp(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Análise de Dados Meteorológicos")
-        self.geometry("1240x800")
-        self.minsize(1024, 680)
+        self._definir_geometria()
 
         self._api = ApiClient()
         self.status_var = tk.StringVar()
@@ -29,6 +28,20 @@ class MainApp(tk.Tk):
     @property
     def api(self):
         return self._api
+
+    def _definir_geometria(self):
+        largura_tela = self.winfo_screenwidth()
+        altura_tela = self.winfo_screenheight()
+
+        largura = min(1240, max(1024, largura_tela - 40))
+        altura = min(780, max(640, altura_tela - 80))
+        posicao_x = max((largura_tela - largura) // 2, 0)
+        posicao_y = max((altura_tela - altura) // 2, 0)
+
+        self.geometry(
+            f"{largura}x{altura}+{posicao_x}+{posicao_y}"
+        )
+        self.minsize(1024, 640)
 
     def _configurar_estilo(self):
         estilo = ttk.Style(self)

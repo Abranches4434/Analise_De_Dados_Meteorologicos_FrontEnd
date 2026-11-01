@@ -188,7 +188,7 @@ class BaseFrame(ttk.Frame, ABC):
     @staticmethod
     def _criar_barra_botoes(parent, botoes):
         barra = ttk.Frame(parent)
-        barra.pack(fill="x", pady=(8, 0))
+        barra.pack(fill="x", pady=(0, 8))
 
         for texto, comando in botoes:
             ttk.Button(
@@ -211,8 +211,8 @@ class BaseCadastroFrame(BaseFrame, ABC):
             font=("TkDefaultFont", 14, "bold"),
         ).pack(anchor="w", pady=(0, 8))
 
-        self._montar_conteudo()
         self._montar_botoes()
+        self._montar_conteudo()
         self.carregar()
 
     @abstractmethod

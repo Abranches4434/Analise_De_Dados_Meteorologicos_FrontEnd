@@ -47,6 +47,8 @@ InterfaceAnaliseMeteorologica/
 
 ## 4. Telas implementadas
 
+As abas de cadastro exibem a barra de ações no topo, logo abaixo do título, com os botões Novo/Limpar, Salvar, Excluir (inativar) e Atualizar lista. A janela calcula o tamanho inicial conforme a resolução da tela, com mínimo de 1024x640.
+
 ### 4.1 Localidades
 
 - Formulário com ID, nome, cidade, estado, latitude, longitude e ativo.
@@ -139,7 +141,7 @@ A API deve estar em execução antes de abrir a interface para que as tabelas se
 - Janela aberta com `python3 main.py` e mantida até o encerramento forçado pelo teste, sem traceback.
 - Teste programático com Tkinter: criação, alteração e inativação de localidade, registro e threshold.
 - Teste programático das quatro análises e preenchimento das tabelas de resultado.
-- Capturas reais das abas geradas para a apresentação em PPTX/PDF.
+- Capturas reais das abas geradas para a apresentação em PPTX/PDF, com a barra de ações visível.
 - Banco restaurado para os dados de demonstração após os testes.
 
 ## 9. Problemas conhecidos e limitações
@@ -150,7 +152,7 @@ A API deve estar em execução antes de abrir a interface para que as tabelas se
 - Localidades, registros e thresholds inativos aparecem nas listagens, mas não podem ser usados em novos registros/thresholds.
 - A interface depende de a API estar em execução e acessível na URL configurada.
 - Não há máscara de data/hora; a validação ocorre ao salvar.
-- O layout foi pensado para tela de 1240x800, com tamanho mínimo de 1024x680.
+- O layout é ajustado à resolução da tela; em 1366x768 a janela abre com 1240x688, mantendo a barra de ações visível.
 
 ## 10. Histórico de atualizações
 
@@ -158,3 +160,4 @@ A API deve estar em execução antes de abrir a interface para que as tabelas se
 |---|---|
 | 2026-10-30 | Estrutura inicial com abas de localidades, registros, thresholds e análises; CRUD, filtros, análises e exportação CSV |
 | 2026-10-31 | Adicionado `.gitignore`, removidos caches do índice e capturas da interface usadas na apresentação |
+| 2026-10-31 | Barra de ações reposicionada para o topo das abas e geometria da janela ajustada à resolução da tela |
