@@ -10,9 +10,9 @@
 | Projeto | InterfaceAnaliseMeteorologica |
 | Diretório | `/home/kaique/Área de trabalho/InterfaceAnaliseMeteorologica` |
 | Tipo | Aplicação desktop Tkinter |
-| Data desta atualização | 2026-10-30 |
+| Data desta atualização | 2026-10-31 |
 | API consumida | `http://127.0.0.1:5000` por padrão |
-| Versionamento | Diretório ainda sem repositório Git próprio |
+| Versionamento | Repositório Git próprio, commit `7c82fa7` |
 
 ## 2. Stack
 
@@ -34,6 +34,7 @@ InterfaceAnaliseMeteorologica/
 ├── config.py                # API_URL e API_TIMEOUT
 ├── api.py                   # Cliente HTTP e tratamento de erros
 ├── requirements.txt
+├── .gitignore
 ├── specProjetoAtualFront.md
 └── ui/
     ├── __init__.py
@@ -138,12 +139,13 @@ A API deve estar em execução antes de abrir a interface para que as tabelas se
 - Janela aberta com `python3 main.py` e mantida até o encerramento forçado pelo teste, sem traceback.
 - Teste programático com Tkinter: criação, alteração e inativação de localidade, registro e threshold.
 - Teste programático das quatro análises e preenchimento das tabelas de resultado.
+- Capturas reais das abas geradas para a apresentação em PPTX/PDF.
 - Banco restaurado para os dados de demonstração após os testes.
 
 ## 9. Problemas conhecidos e limitações
 
-- O diretório da interface ainda não possui repositório Git próprio.
 - Não há suíte automatizada de testes da interface; a validação é manual e programática.
+- O `.gitignore` foi adicionado e os caches `__pycache__` foram removidos do índice do Git.
 - A interface carrega todos os registros do período filtrado; não há paginação.
 - Localidades, registros e thresholds inativos aparecem nas listagens, mas não podem ser usados em novos registros/thresholds.
 - A interface depende de a API estar em execução e acessível na URL configurada.
@@ -155,3 +157,4 @@ A API deve estar em execução antes de abrir a interface para que as tabelas se
 | Data | Alteração documentada |
 |---|---|
 | 2026-10-30 | Estrutura inicial com abas de localidades, registros, thresholds e análises; CRUD, filtros, análises e exportação CSV |
+| 2026-10-31 | Adicionado `.gitignore`, removidos caches do índice e capturas da interface usadas na apresentação |
