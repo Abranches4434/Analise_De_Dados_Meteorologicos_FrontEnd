@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from ui.base import BaseCadastroFrame
+from ui.tema import CORES
 
 
 VARIAVEIS = (
@@ -20,6 +21,8 @@ ESTACOES = ("ANUAL", "PRIMAVERA", "VERAO", "OUTONO", "INVERNO")
 class ThresholdsFrame(BaseCadastroFrame):
 
     titulo = "Thresholds"
+    subtitulo = "Limiares meteorológicos por localidade e estação"
+    cor_destaque = CORES["laranja"]
 
     def __init__(self, master, app):
         self._id = tk.StringVar()
@@ -118,10 +121,10 @@ class ThresholdsFrame(BaseCadastroFrame):
         self._criar_barra_botoes(
             self,
             (
-                ("Novo / Limpar", self.limpar),
-                ("Salvar", self.salvar),
-                ("Excluir (inativar)", self.excluir),
-                ("Atualizar lista", self.carregar),
+                ("Novo / Limpar", self.limpar, "neutro"),
+                ("Salvar", self.salvar, "sucesso"),
+                ("Excluir (inativar)", self.excluir, "perigo"),
+                ("Atualizar lista", self.carregar, "laranja"),
             ),
         )
 

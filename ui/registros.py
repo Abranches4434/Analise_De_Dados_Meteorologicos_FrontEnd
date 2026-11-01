@@ -3,11 +3,14 @@ from datetime import date, time
 from tkinter import ttk
 
 from ui.base import BaseCadastroFrame
+from ui.tema import CORES, BotaoAnimado
 
 
 class RegistrosFrame(BaseCadastroFrame):
 
     titulo = "Registros climáticos"
+    subtitulo = "Histórico de medições, filtros e manutenção dos dados"
+    cor_destaque = CORES["teal"]
 
     def __init__(self, master, app):
         self._id = tk.StringVar()
@@ -37,10 +40,10 @@ class RegistrosFrame(BaseCadastroFrame):
         filtros.pack(fill="x", pady=(0, 8))
 
         self._criar_entrada(
-            filtros, 0, 0, "Data início:", self._filtro_inicio
+            filtros, 0, 0, "Data início:", self._filtro_inicio, largura=14
         )
         self._criar_entrada(
-            filtros, 0, 2, "Data fim:", self._filtro_fim
+            filtros, 0, 2, "Data fim:", self._filtro_fim, largura=14
         )
         self._filtro_combo = self._criar_combo(
             filtros,
@@ -49,31 +52,35 @@ class RegistrosFrame(BaseCadastroFrame):
             "Localidade:",
             self._filtro_localidade,
             ["Todas"],
-            largura=28,
+            largura=20,
         )
 
-        acoes = ttk.Frame(filtros)
-        acoes.grid(row=1, column=0, columnspan=6, sticky="w", pady=(4, 0))
-        ttk.Button(
+        acoes = ttk.Frame(filtros, style="Card.TFrame")
+        acoes.grid(row=0, column=6, sticky="w", padx=(6, 0), pady=2)
+        BotaoAnimado(
             acoes,
-            text="Filtrar",
-            command=self.carregar,
-        ).pack(side="left", padx=(0, 6))
-        ttk.Button(
+            "Filtrar",
+            self.carregar,
+            variante="teal",
+            altura=32,
+        ).pack(side="left", padx=(0, 8))
+        BotaoAnimado(
             acoes,
-            text="Limpar filtros",
-            command=self._limpar_filtros,
+            "Limpar filtros",
+            self._limpar_filtros,
+            variante="neutro",
+            altura=32,
         ).pack(side="left")
 
         formulario = ttk.LabelFrame(
             self,
             text="Dados do registro",
-            padding=10,
+            padding=4,
         )
-        formulario.pack(fill="x", pady=(0, 8))
+        formulario.pack(fill="x", pady=(0, 4))
 
         self._id_entry = self._criar_entrada(
-            formulario, 0, 0, "ID:", self._id, largura=10
+            formulario, 0, 0, "ID:", self._id, largura=12
         )
         self._id_entry.configure(state="readonly")
 
@@ -84,40 +91,39 @@ class RegistrosFrame(BaseCadastroFrame):
             "Localidade:",
             self._localidade,
             [],
-            largura=28,
+            largura=18,
+        )
+        self._criar_entrada(
+            formulario, 0, 4, "Data (AAAA-MM-DD):", self._data, largura=12
+        )
+        self._criar_entrada(
+            formulario, 0, 6, "Hora (HH:MM:SS):", self._hora, largura=8
+        )
+
+        self._criar_entrada(
+            formulario, 1, 0, "Temp. máxima:", self._temp_max, largura=12
+        )
+        self._criar_entrada(
+            formulario, 1, 2, "Temp. mínima:", self._temp_min, largura=12
+        )
+        self._criar_entrada(
+            formulario, 1, 4, "Temp. média:", self._temp_media, largura=12
         )
         self._criar_check(
-            formulario, 0, 4, "Ativo", self._ativo
+            formulario, 1, 6, "Ativo", self._ativo
         )
 
         self._criar_entrada(
-            formulario, 1, 0, "Data (AAAA-MM-DD):", self._data
+            formulario, 2, 0, "Umidade (%):", self._umidade, largura=12
         )
         self._criar_entrada(
-            formulario, 1, 2, "Hora (HH:MM:SS):", self._hora
+            formulario, 2, 2, "Precipitação:", self._precipitacao, largura=12
         )
         self._criar_entrada(
-            formulario, 1, 4, "Temp. máxima:", self._temp_max
-        )
-
-        self._criar_entrada(
-            formulario, 2, 0, "Temp. mínima:", self._temp_min
+            formulario, 2, 4, "Vento:", self._vento, largura=12
         )
         self._criar_entrada(
-            formulario, 2, 2, "Temp. média:", self._temp_media
-        )
-        self._criar_entrada(
-            formulario, 2, 4, "Umidade (%):", self._umidade
-        )
-
-        self._criar_entrada(
-            formulario, 3, 0, "Precipitação:", self._precipitacao
-        )
-        self._criar_entrada(
-            formulario, 3, 2, "Vento:", self._vento
-        )
-        self._criar_entrada(
-            formulario, 3, 4, "Pressão:", self._pressao
+            formulario, 2, 6, "Pressão:", self._pressao, largura=8
         )
 
         tabela = ttk.LabelFrame(
@@ -155,10 +161,10 @@ class RegistrosFrame(BaseCadastroFrame):
         self._criar_barra_botoes(
             self,
             (
-                ("Novo / Limpar", self.limpar),
-                ("Salvar", self.salvar),
-                ("Excluir (inativar)", self.excluir),
-                ("Atualizar lista", self.carregar),
+                ("Novo / Limpar", self.limpar, "neutro"),
+                ("Salvar", self.salvar, "sucesso"),
+                ("Excluir (inativar)", self.excluir, "perigo"),
+                ("Atualizar lista", self.carregar, "teal"),
             ),
         )
 

@@ -12,7 +12,7 @@
 | Tipo | Aplicação desktop Tkinter |
 | Data desta atualização | 2026-10-31 |
 | API consumida | `http://127.0.0.1:5000` por padrão |
-| Versionamento | Repositório Git próprio, commit `7c82fa7` |
+| Versionamento | Repositório Git próprio, último commit `fb17592` |
 
 ## 2. Stack
 
@@ -20,6 +20,7 @@
 |---|---|
 | Python 3.12 | Linguagem |
 | Tkinter / ttk | Interface gráfica |
+| Canvas / tkinter.font | Cabeçalho, botões e componentes desenhados |
 | urllib.request | Chamadas HTTP à API |
 | json | Serialização |
 | csv | Exportação recebida da API |
@@ -39,6 +40,8 @@ InterfaceAnaliseMeteorologica/
 └── ui/
     ├── __init__.py
     ├── base.py              # BaseFrame, BaseCadastroFrame e helpers
+    ├── tema.py              # Paleta, estilos ttk, botão animado e cabeçalho
+    ├── dialogos.py          # Diálogos modais personalizados
     ├── localidades.py       # CRUD de localidades
     ├── registros.py         # CRUD e filtros de registros
     ├── thresholds.py        # CRUD de thresholds
@@ -47,13 +50,16 @@ InterfaceAnaliseMeteorologica/
 
 ## 4. Telas implementadas
 
-As abas de cadastro exibem a barra de ações no topo, logo abaixo do título, com os botões Novo/Limpar, Salvar, Excluir (inativar) e Atualizar lista. A janela calcula o tamanho inicial conforme a resolução da tela, com mínimo de 1024x640.
+A interface usa um tema visual próprio, sem dependências externas: paleta azul-marinho, teal e acentos por seção, cabeçalho com gradiente desenhado em Canvas, cartões claros, tabelas zebradas com hover, botões animados e diálogos modais personalizados. As abas de cadastro exibem a barra de ações no topo, logo abaixo do título, com os botões Novo/Limpar, Salvar, Excluir (inativar) e Atualizar lista.
+
+A janela calcula o tamanho inicial conforme a resolução da tela, com mínimo de 1024x640 e limite de 1280x820. Em uma tela 1366x768 ela abre com 1280x728. O cabeçalho e a barra de status exibem o estado da conexão com a API.
 
 ### 4.1 Localidades
 
 - Formulário com ID, nome, cidade, estado, latitude, longitude e ativo.
 - Listagem com todas as localidades, incluindo inativas.
-- Botões: novo/limpar, salvar, excluir (inativar) e atualizar lista.
+- Botões animados: novo/limpar (neutro), salvar (verde), excluir (vermelho) e atualizar lista (azul).
+- Acento visual azul na seção.
 - Seleção de uma linha preenche o formulário.
 - Latitude e longitude aceitam vírgula ou ponto decimal.
 - Após salvar ou inativar, as demais abas são atualizadas.
@@ -63,7 +69,9 @@ As abas de cadastro exibem a barra de ações no topo, logo abaixo do título, c
 - Filtros por data inicial, data final e localidade.
 - Formulário com localidade, data, hora, temperaturas, umidade, precipitação, vento, pressão e ativo.
 - Listagem com nome da localidade, data/hora, variáveis e status.
-- Botões: novo/limpar, salvar, excluir (inativar), atualizar lista, filtrar e limpar filtros.
+- Botões animados: novo/limpar, salvar, excluir (inativar), atualizar lista, filtrar e limpar filtros.
+- Acento visual teal na seção.
+- Filtros e ações na mesma linha; formulário compacto em três linhas para manter a listagem visível em 1024x640.
 - Datas no formato `AAAA-MM-DD` e horas em `HH:MM` ou `HH:MM:SS`.
 
 ### 4.3 Thresholds
@@ -73,13 +81,16 @@ As abas de cadastro exibem a barra de ações no topo, logo abaixo do título, c
 - Tipos: `MAXIMO`, `MINIMO`, `DIASSEMCHUVA`.
 - Estações: `ANUAL`, `PRIMAVERA`, `VERAO`, `OUTONO`, `INVERNO`.
 - Listagem de todos os thresholds, incluindo inativos.
-- Botões: novo/limpar, salvar, excluir (inativar) e atualizar lista.
+- Botões animados: novo/limpar, salvar, excluir (inativar) e atualizar lista (laranja).
+- Acento visual laranja na seção.
 
 ### 4.4 Análises
 
 - Filtros por data inicial, data final, localidade e agrupamento (`mes` ou `estacao`).
 - Lista de localidades para comparação com seleção múltipla.
-- Botões: estatísticas, comparação, eventos extremos e sazonalidade.
+- Botões animados: estatísticas (azul), comparação (teal), eventos extremos (laranja) e sazonalidade (roxo).
+- Controles de exportação na mesma linha das ações.
+- Acento visual roxo na seção; listbox e tabela de resultados estilizadas.
 - Resultados exibidos em tabela dinâmica com rolagem.
 - Exportação CSV por tipo: registros, estatísticas, comparação, eventos ou sazonalidade.
 - A exportação usa diálogo para escolher o arquivo de destino.
@@ -110,7 +121,7 @@ As abas de cadastro exibem a barra de ações no topo, logo abaixo do título, c
 | `GET /analises/sazonalidade` | Médias por mês ou estação |
 | `GET /exportacoes/<tipo>` | Download do CSV |
 
-Erros da API são exibidos em caixas de diálogo com a mensagem retornada em `{"erro": "..."}`.
+Erros da API são exibidos em diálogos modais personalizados com a mensagem retornada em `{"erro": "..."}`. Confirmações de inativação e mensagens de sucesso usam o mesmo componente visual.
 
 ## 6. Configuração
 
@@ -135,13 +146,15 @@ A API deve estar em execução antes de abrir a interface para que as tabelas se
 
 ## 8. Validações realizadas
 
-- `python3 -m compileall` sem erros.
-- Importação de `main.py`, `api.py` e dos quatro frames sem erros.
+- `python3 -m compileall` sem erros para todos os módulos da interface.
+- Importação de `main.py`, `api.py`, `ui.tema`, `ui.dialogos` e dos quatro frames sem erros.
 - Cliente HTTP validado contra a API real para localidades, registros, thresholds, análises e CSV.
-- Janela aberta com `python3 main.py` e mantida até o encerramento forçado pelo teste, sem traceback.
-- Teste programático com Tkinter: criação, alteração e inativação de localidade, registro e threshold.
+- Janela aberta em 1280x728 e em 1024x640, sem corte dos botões e com listagens visíveis.
+- Teste programático dos diálogos de informação, erro e confirmação, incluindo retorno `False` ao cancelar.
+- Teste programático de hover nas linhas da tabela e nos botões animados.
 - Teste programático das quatro análises e preenchimento das tabelas de resultado.
-- Capturas reais das abas geradas para a apresentação em PPTX/PDF, com a barra de ações visível.
+- Validação com dados reais: estatísticas retornaram 7 linhas e comparação retornou 14 linhas.
+- Capturas reais das quatro abas e da análise preenchida geradas para a apresentação em PPTX/PDF.
 - Banco restaurado para os dados de demonstração após os testes.
 
 ## 9. Problemas conhecidos e limitações
@@ -152,7 +165,8 @@ A API deve estar em execução antes de abrir a interface para que as tabelas se
 - Localidades, registros e thresholds inativos aparecem nas listagens, mas não podem ser usados em novos registros/thresholds.
 - A interface depende de a API estar em execução e acessível na URL configurada.
 - Não há máscara de data/hora; a validação ocorre ao salvar.
-- O layout é ajustado à resolução da tela; em 1366x768 a janela abre com 1240x688, mantendo a barra de ações visível.
+- O layout é ajustado à resolução da tela; em 1366x768 a janela abre com 1280x728 e em 1024x640 mantém a barra de ações e a listagem visíveis.
+- As tabelas exibem uma quantidade limitada de linhas em telas menores; a rolagem vertical permanece disponível.
 
 ## 10. Histórico de atualizações
 
@@ -161,3 +175,4 @@ A API deve estar em execução antes de abrir a interface para que as tabelas se
 | 2026-10-30 | Estrutura inicial com abas de localidades, registros, thresholds e análises; CRUD, filtros, análises e exportação CSV |
 | 2026-10-31 | Adicionado `.gitignore`, removidos caches do índice e capturas da interface usadas na apresentação |
 | 2026-10-31 | Barra de ações reposicionada para o topo das abas e geometria da janela ajustada à resolução da tela |
+| 2026-10-31 | Tema visual aplicado: paleta navy/teal, cabeçalho em Canvas, botões animados, tabelas com hover, diálogos personalizados e layout compacto validado em 1024x640 |

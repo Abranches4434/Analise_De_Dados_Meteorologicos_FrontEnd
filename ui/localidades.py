@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from ui.base import BaseCadastroFrame
+from ui.tema import CORES
 
 
 ESTADOS = (
@@ -14,6 +15,8 @@ ESTADOS = (
 class LocalidadesFrame(BaseCadastroFrame):
 
     titulo = "Localidades"
+    subtitulo = "Cadastro e manutenção das estações monitoradas"
+    cor_destaque = CORES["azul"]
 
     def __init__(self, master, app):
         self._id = tk.StringVar()
@@ -85,10 +88,10 @@ class LocalidadesFrame(BaseCadastroFrame):
         self._criar_barra_botoes(
             self,
             (
-                ("Novo / Limpar", self.limpar),
-                ("Salvar", self.salvar),
-                ("Excluir (inativar)", self.excluir),
-                ("Atualizar lista", self.carregar),
+                ("Novo / Limpar", self.limpar, "neutro"),
+                ("Salvar", self.salvar, "sucesso"),
+                ("Excluir (inativar)", self.excluir, "perigo"),
+                ("Atualizar lista", self.carregar, "azul"),
             ),
         )
 

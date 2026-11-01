@@ -3,6 +3,12 @@ from datetime import date
 from tkinter import filedialog, ttk
 
 from ui.base import BaseFrame
+from ui.tema import (
+    CORES,
+    BotaoAnimado,
+    configurar_listbox,
+    criar_cabecalho_pagina,
+)
 
 
 TIPOS_EXPORTACAO = (
@@ -16,6 +22,10 @@ TIPOS_EXPORTACAO = (
 
 class AnalisesFrame(BaseFrame):
 
+    titulo = "Análises"
+    subtitulo = "Indicadores, comparações, eventos extremos e exportação"
+    cor_destaque = CORES["roxo"]
+
     def _construir(self):
         self._data_inicio = tk.StringVar()
         self._data_fim = tk.StringVar()
@@ -28,20 +38,22 @@ class AnalisesFrame(BaseFrame):
         self._rotulo_por_id = {}
         self._tree = None
 
-        ttk.Label(
+        criar_cabecalho_pagina(
             self,
-            text="Análises",
-            font=("TkDefaultFont", 14, "bold"),
-        ).pack(anchor="w", pady=(0, 8))
+            self.titulo,
+            self.subtitulo,
+            self.cor_destaque,
+        )
 
         filtros = ttk.LabelFrame(self, text="Filtros", padding=8)
         filtros.pack(fill="x", pady=(0, 8))
+        filtros.columnconfigure(7, weight=1)
 
         self._criar_entrada(
-            filtros, 0, 0, "Data início:", self._data_inicio
+            filtros, 0, 0, "Data início:", self._data_inicio, largura=16
         )
         self._criar_entrada(
-            filtros, 0, 2, "Data fim:", self._data_fim
+            filtros, 0, 2, "Data fim:", self._data_fim, largura=16
         )
         self._localidade_combo = self._criar_combo(
             filtros,
@@ -50,16 +62,16 @@ class AnalisesFrame(BaseFrame):
             "Localidade:",
             self._localidade,
             ["Todas"],
-            largura=28,
+            largura=20,
         )
         self._criar_combo(
             filtros,
-            1,
             0,
+            6,
             "Agrupamento:",
             self._agrupamento,
             ("mes", "estacao"),
-            largura=14,
+            largura=12,
         )
 
         comparacao = ttk.LabelFrame(
@@ -68,56 +80,60 @@ class AnalisesFrame(BaseFrame):
             padding=6,
         )
         comparacao.grid(
-            row=2,
+            row=1,
             column=0,
-            columnspan=6,
+            columnspan=8,
             sticky="ew",
             pady=(6, 0),
         )
         self._lista_comparacao = tk.Listbox(
             comparacao,
             selectmode="extended",
-            height=4,
+            height=3,
             exportselection=False,
         )
+        configurar_listbox(self._lista_comparacao)
         self._lista_comparacao.pack(fill="x")
 
         acoes = ttk.Frame(self)
-        acoes.pack(fill="x", pady=(0, 8))
+        acoes.pack(fill="x", pady=(0, 6))
 
-        for texto, comando in (
-            ("Estatísticas", self.carregar_estatisticas),
-            ("Comparação", self.carregar_comparacao),
-            ("Eventos extremos", self.carregar_eventos),
-            ("Sazonalidade", self.carregar_sazonalidade),
+        for texto, comando, variante in (
+            ("Estatísticas", self.carregar_estatisticas, "azul"),
+            ("Comparação", self.carregar_comparacao, "teal"),
+            ("Eventos extremos", self.carregar_eventos, "laranja"),
+            ("Sazonalidade", self.carregar_sazonalidade, "roxo"),
         ):
-            ttk.Button(
+            BotaoAnimado(
                 acoes,
-                text=texto,
-                command=comando,
-            ).pack(side="left", padx=(0, 6))
+                texto,
+                comando,
+                variante=variante,
+            ).pack(side="left", padx=(0, 8))
 
-        exportacao = ttk.Frame(self)
-        exportacao.pack(fill="x", pady=(0, 8))
+        exportacao = ttk.Frame(acoes, style="Pagina.TFrame")
+        exportacao.pack(side="right", padx=(8, 0))
         ttk.Label(exportacao, text="Exportar:").pack(side="left")
         self._combo_exportacao = ttk.Combobox(
             exportacao,
             textvariable=self._tipo_exportacao,
             values=TIPOS_EXPORTACAO,
             state="readonly",
-            width=18,
+            width=14,
         )
         self._combo_exportacao.pack(side="left", padx=(6, 6))
-        ttk.Button(
+        BotaoAnimado(
             exportacao,
-            text="Salvar CSV",
-            command=self.exportar,
+            "Salvar CSV",
+            self.exportar,
+            variante="sucesso",
+            altura=32,
         ).pack(side="left")
 
         self._titulo_resultado = ttk.Label(
             self,
             text="Selecione uma análise.",
-            font=("TkDefaultFont", 11, "bold"),
+            style="Resultado.TLabel",
         )
         self._titulo_resultado.pack(anchor="w", pady=(0, 4))
 
@@ -129,7 +145,7 @@ class AnalisesFrame(BaseFrame):
         resultado.pack(fill="both", expand=True)
         self._container_resultado = resultado
 
-        self._status = ttk.Label(self, text="")
+        self._status = ttk.Label(self, text="", style="StatusPagina.TLabel")
         self._status.pack(anchor="w", pady=(6, 0))
 
     def atualizar_localidades(self, localidades):
